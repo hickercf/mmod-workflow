@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# 工作流引擎状态库
+.engine/
+
+# 临时/本地产物
+tmp/
+_backups/
+workspace/
+data/
+
+# LaTeX 中间产物
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.synctex.gz
+
+# 系统
+.DS_Store
+Thumbs.db
+desktop.ini

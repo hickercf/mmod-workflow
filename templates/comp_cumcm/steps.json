@@ -1,0 +1,63 @@
+{
+  "template": "comp_cumcm",
+  "version": 1,
+  "display_name": "全国大学生数学建模竞赛（CUMCM）统一工作流",
+  "steps": [
+    {
+      "id": "S1",
+      "skill": "comp-prob-analysis",
+      "display_name": "审题与数据分析",
+      "checkpoint": "approve",
+      "summary": "读题面与附件，产出 PROBLEM_ANALYSIS.md、analysis.md、data-audit.md，登记研究计划与主张证据矩阵的骨架"
+    },
+    {
+      "id": "S2",
+      "skill": "comp-modeling",
+      "display_name": "建模方案与赛马注册",
+      "checkpoint": "feedback",
+      "summary": "冻结 model-selection.md 与 scheme-registry.json（每问 >=2 候选、baseline+advanced、赛马协议），完成推导检查与实验矩阵"
+    },
+    {
+      "id": "S3",
+      "skill": "comp-code-race",
+      "display_name": "并行求解与赛马选优",
+      "checkpoint": "approve",
+      "summary": "每问每候选并行实现并以同口径跑出主指标，产出 scheme-comparison.md 赛马表与 winner，summary 三方一致"
+    },
+    {
+      "id": "S4",
+      "skill": "comp-deep-evidence",
+      "display_name": "深化与深度证据",
+      "checkpoint": "",
+      "summary": "对 winner 闭环六份深度证据（诊断/消融/独立验证/不确定性/失效边界/语义检查）"
+    },
+    {
+      "id": "S5",
+      "skill": "comp-figures",
+      "display_name": "图表生成与清单",
+      "checkpoint": "",
+      "summary": "产出每问 PNG/PDF 同 stem 图对，重建 canonical manifest 并通过 --check"
+    },
+    {
+      "id": "S6",
+      "skill": "comp-paper-zh",
+      "display_name": "论文写作与装配",
+      "checkpoint": "approve",
+      "summary": "每问三份分离正文（建模过程/结果/论证）+ 摘要 + 装配稿（tex/docx）+ 证据台账/论证地图/深度矩阵"
+    },
+    {
+      "id": "S7",
+      "skill": "comp-review",
+      "display_name": "两轮评审与三席盲评",
+      "checkpoint": "",
+      "summary": "两轮对抗审查 + 三席盲评判审团，review-report round>=2/p0=0/pass，judge-panel pass"
+    },
+    {
+      "id": "S8",
+      "skill": "comp-compile-zh",
+      "display_name": "合规检查与最终包编译",
+      "checkpoint": "approve",
+      "summary": "合规报告 pass（正文 >=25 页），编译最终 PDF/DOCX，evidence ledger 指向被审包，用户确认交付"
+    }
+  ]
+}

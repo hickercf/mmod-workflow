@@ -1,0 +1,121 @@
+% =====================================================================
+% CUMCM 论文主骨架（comp_cumcm 模板 · 统一工作流 S6/S8 使用）
+% 源模板：templates/comp_cumcm/latex/（cumcmthesis.cls 为开源模板 v2.6，
+%         出处：Modex-MH-Agent 安装包内置竞赛模板，社区许可使用）
+% 编译：  python scripts/build_latex.py paper/latex/main.tex   （xelatex 两遍）
+% 装配：  把 paper/sections/*.md 转为同名 *.tex 放入本目录后填写 TODO 项。
+% 版式合同（CLAUDE.md）：西文与正文数字 Times New Roman；一级标题 16pt（三号）；
+%         目录条目比正文小一档；每张图图下自明标题 + 紧随其后的读图段落。
+% =====================================================================
+\documentclass[withoutpreface]{cumcmthesis}
+% withoutpreface 去掉承诺书/编号页，提交时按当年通知换回（或使用官方封面页）。
+
+% ---- 字体：西文与数字 Times New Roman ----
+\setmainfont{Times New Roman}
+\setsansfont{Times New Roman}
+\setmonofont{Consolas}
+
+% ---- 一级标题 16pt（三号）----
+\usepackage{titlesec}
+\titleformat{\section}{\zihao{3}\bfseries\centering}{第\,\thesection\,章}{0.5em}{}
+\titlespacing{\section}{0pt}{1.2em}{0.8em}
+
+% ---- 图表与引用 ----
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+
+% =====================================================================
+% 摘要：背景/总体框架一段 + 每问独立一段 + 综合边界一段 + 关键词
+% =====================================================================
+\begin{document}
+
+\title{题名待填：<题目短名> 的建模与求解}
+\author{队号：\mcm@tokens@baominghao}  % TODO 提交时填写
+\date{\today}
+
+\maketitle
+
+\begin{abstract}
+% TODO 段落1：背景与总体框架（数据、方法体系、验证链路、递进框架）
+% TODO 段落2-5：问题一至问题四各独立成段（方法与带单位核心输出）
+% TODO 段落6：综合边界与适用范围
+\keywords{关键词一；关键词二；关键词三；关键词四；关键词五}
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================================
+% 第一章 问题背景与重述
+% =====================================================================
+\section{问题背景与重述}
+\input{chapters/01-problem-analysis.tex}   % TODO 由 paper/sections/01-problem-analysis.md 转换
+
+% =====================================================================
+% 第二章 问题分析
+% =====================================================================
+\section{问题分析}
+\input{chapters/02-analysis.tex}           % TODO 转换/撰写
+
+% =====================================================================
+% 第三章 模型假设
+% =====================================================================
+\section{模型假设}
+\input{chapters/03-assumptions.tex}        % TODO 转换/撰写
+
+% =====================================================================
+% 第四章 符号说明
+% =====================================================================
+\section{符号说明}
+\input{chapters/04-symbols.tex}            % TODO 转换/撰写（符号表）
+
+% =====================================================================
+% 第五章 模型的建立与求解（四问为二级标题，三级标题点明本问对象）
+% =====================================================================
+\section{模型的建立与求解}
+
+\subsection{问题一：<本问对象>}
+% 三级标题按职责锚点 + 本问对象，例如：
+% \subsubsection{任务转化与机理假设}
+% \subsubsection{模型建立与推导（模型名、变量）}
+% \subsubsection{求解流程与赛马比较（MLR vs Hill）}
+% \subsubsection{核心结果与读图解释}
+% \subsubsection{方案选择与模型诊断}
+\input{chapters/q1.tex}                    % TODO 由 q1-{modeling-process,results,model-argumentation}.md 合并转换
+
+\subsection{问题二：<本问对象>}
+\input{chapters/q2.tex}
+
+\subsection{问题三：<本问对象>}
+\input{chapters/q3.tex}
+
+\subsection{问题四：<本问对象>}
+\input{chapters/q4.tex}
+
+% =====================================================================
+% 第六章 模型评价与应用边界
+% =====================================================================
+\section{模型评价与应用边界}
+\input{chapters/07-evaluation.tex}         % TODO 转换/撰写
+
+% =====================================================================
+% 第七章 结论
+% =====================================================================
+\section{结论}
+\input{chapters/08-conclusion.tex}         % TODO 转换/撰写
+
+% =====================================================================
+% 参考文献
+% =====================================================================
+\bibliographystyle{unsrt}
+\nocite{*}
+\bibliography{refs}                        % TODO refs.bib 或直接 thebibliography
+
+% =====================================================================
+% 附录（可选；正文与附录分别计数）
+% =====================================================================
+%\appendix
+%\section{主要代码与补充图表}
+
+\end{document}

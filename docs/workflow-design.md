@@ -110,8 +110,15 @@ helper：`nonempty_file`、`frontmatter_value`、`markdown_table_raw`、`valid_p
 **门禁（S1/S2 强制）**：gate S1 检查 `PROBLEM_ANALYSIS.md` 或 `analysis.md` 含非占位
 登记行（`参考卡：<卡名>，用于 <决策>`）；gate S2 检查 `MODELING_REPORT.md` 或
 `model-selection.md` 含登记行。未引用卡片时写明理由亦可过门（登记动作强制、使用不强制）。
+**S2 选型论证门禁**：`MODELING_REPORT.md` 或 `model-selection.md` 每问段落须含
+候选对比/选择理由/赛马决策等非占位说明（对应获奖论文"选型论证是拿分点"）。
 **边界**：卡片只提供建模思路与方法启发，禁止把卡片数值/阈值/结论写入本题工件——
-本题所有数值必须来自 workspace 内可执行脚本产物（与“数据真实性红线”一致）。
+本题所有数值必须来自 workspace 内可执行脚本产物（与"数据真实性红线"一致）。
+
+**知识库产物**：`knowledge-base/distillation/` 下建模技能库 `modeling-skills.md`
+（91 条建模决策技能）与写作技能库 `writing-skills.md`（56 条写作技能）按需取用；
+**经验闭环**：M2 完成后运行 `scripts/kb_backfill.py <workspace>` 把赛马结论追加到
+`knowledge-base/distillation/race-log.md`（幂等），每跑一题选型经验累积一条。
 
 ## 6. 与现有三阶段生态的兼容
 

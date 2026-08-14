@@ -31,6 +31,7 @@ import argparse
 import base64
 import datetime as dt
 import json
+import re
 import sqlite3
 import subprocess
 import sys
@@ -281,7 +282,82 @@ def gate_s2(root: Path, connection: sqlite3.Connection) -> list[str]:
     kb_registration_blockers(
         root, ("MODELING_REPORT.md", "01-analysis/model-selection.md"), "S2", blockers
     )
+    selection_argument_blockers(root, blockers)
     return blockers
+
+
+# ----------------------------------------------------- selection argument gate
+
+SELECTION_MARKERS = (
+    "候选矩阵",
+    "赛马决策",
+    "方案选择",
+    "选择理由",
+    "为何",
+    "为什么",
+    "优于",
+    "选用",
+    "理由如下",
+    "fallback",
+    "回退",
+)
+QUESTION_HEADING_RE = re.compile(
+    r"^#{1,4}\s*(?:问题|q|Q)\s*([1-9][0-9]*)\s*[:：]?", re.MULTILINE
+)
+
+
+def selection_argument_blockers(root: Path, blockers: list[str]) -> None:
+    """Require per-question scheme-selection reasoning in the M1 selection doc.
+
+    Each question's section in ``model-selection.md`` (or ``MODELING_REPORT.md``)
+    must contain at least one non-placeholder line with a selection-argument
+    marker (candidate matrix, race decision, why-not reasoning, fallback...).
+    This mirrors the award-paper finding that explicit selection arguments
+    beat model stacking (award-paper reverse-analysis, 2026-08).
+    """
+    state = step_state_for_gate(root)
+    registry, _ = wg.load_scheme_registry(root)
+    questions = wg.expected_questions(root, state, registry)
+    if not questions:
+        return
+    candidates = ("MODELING_REPORT.md", "01-analysis/model-selection.md")
+    text = ""
+    for relative in candidates:
+        path = root / relative
+        if wg.nonempty_file(path):
+            text = wg.read_text(path)
+            if text.strip():
+                break
+    if not text.strip():
+        blockers.append(
+            "S2: 选型论证缺失——在 MODELING_REPORT.md 或 model-selection.md 中"
+            "按问写明候选对比与选择理由"
+        )
+        return
+
+    sections: dict[int, str] = {}
+    current: int | None = None
+    start = 0
+    for match in QUESTION_HEADING_RE.finditer(text):
+        question = int(match.group(1))
+        if current is not None:
+            sections[current] = text[start:match.start()]
+        current = question
+        start = match.start()
+    if current is not None:
+        sections[current] = text[start:]
+
+    for question in questions:
+        segment = sections.get(question, "") or text
+        if not any(
+            marker in line and not wg.placeholder_value(line)
+            for line in segment.splitlines()
+            for marker in SELECTION_MARKERS
+        ):
+            blockers.append(
+                f"S2 q{question}: 缺少选型论证——该问段落需含候选对比/选择理由/"
+                "赛马决策等非占位说明"
+            )
 
 
 def gate_s3(root: Path, connection: sqlite3.Connection) -> list[str]:

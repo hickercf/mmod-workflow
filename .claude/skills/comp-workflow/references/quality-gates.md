@@ -27,6 +27,8 @@ purpose: "每步自动质量门清单（S1 文件契约、S2=check modeling、S3
 - `scheme-registry.json` 版本 1；每问 ≥2 候选含 baseline/advanced、名称互异；required race 冻结 schemes/feasibility_checks/primary_metric/direction/protocol；waived 有 waiver_reason。
 - `derivation-notes.md`、`experiment-matrix.md`（每问 ≥4 实验）`status: ready`。
 - 机器验证直接调 `workflow_gate.py` 的 `check_modeling`。
+- **知识库登记**：`MODELING_REPORT.md` 或 `model-selection.md` 含非占位"参考卡/知识库依据"行（登记动作强制、使用不强制）。
+- **选型论证**：`MODELING_REPORT.md` 或 `model-selection.md` 每问段落含候选对比/选择理由/赛马决策等非占位说明（对应获奖论文"选型论证是拿分点"）。
 
 ## S3 自动门：赛马表（check_code 相关 helper）
 
@@ -78,6 +80,11 @@ purpose: "每步自动质量门清单（S1 文件契约、S2=check modeling、S3
 - 最终 PDF/DOCX 是有效文件（`valid_pdf`/`valid_docx`）；evidence ledger 的 reviewed_package 指向真实被审包。
 - 最终数字抽查：正文数字与 results summary 一致（数据真实性红线）。
 - `workflow_gate.py check paper` 全绿。
+
+## 经验闭环（M2 完成后，主循环建议步骤）
+
+- 跑 `python scripts/kb_backfill.py <workspace>`：把每问赛马结论（候选集/winner/主指标/结果摘要/稳健性）追加到 `knowledge-base/distillation/race-log.md`（幂等，`--dry-run` 预览）。每跑一题，Agent 选型经验累积一条。
+- 建模技能库 `knowledge-base/distillation/modeling-skills.md` 与写作技能库 `writing-skills.md` 按需取用（S2 建模、S6 写作、S7 评审）。
 
 ## 人工检查点清单
 

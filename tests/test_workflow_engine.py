@@ -189,6 +189,59 @@ def test_kb_registration_gate(root: Path) -> None:
     assert blockers and "S2" in blockers[0]
 
 
+def test_selection_argument_gate(root: Path) -> None:
+    """S2 gate requires per-question selection reasoning in the M1 doc."""
+    make_workspace(root)
+    (root / "results" / "q2").mkdir(parents=True, exist_ok=True)  # so q2 is an expected question
+    write(root / "01-analysis" / "model-selection.md",
+          "---\nfrozen: true\n---\n\n## Q1 关系模型\n\n无任何选型论证的段落。\n\n"
+          "## Q2 优化模型\n\n同样没有候选对比。\n")
+    blockers: list[str] = []
+    we.selection_argument_blockers(root, blockers)
+    assert any("q1" in b and "选型论证" in b for b in blockers)
+    assert any("q2" in b and "选型论证" in b for b in blockers)
+    write(root / "01-analysis" / "model-selection.md",
+          "---\nfrozen: true\n---\n\n## Q1 关系模型\n\n### 候选矩阵\n\n| 候选名 | kind | 方法要点 |\n|---|---|---|\n| a | baseline | 线性 |\n\n"
+          "### 赛马决策\n\n选择理由：样本外指标可公平量化，必须赛马。fallback：不收敛则回退基线。\n\n"
+          "## Q2 优化模型\n\n### 方案选择\n\n为何不用 MIP：状态空间过大。选用贪心。\n")
+    blockers = []
+    we.selection_argument_blockers(root, blockers)
+    assert not blockers
+
+
+def test_kb_backfill_race_log(root: Path) -> None:
+    """kb_backfill.py appends idempotent race rows for solved questions."""
+    import subprocess as sp
+    import sys as _sys
+
+    ws = root / "ws"
+    for relative in ("01-analysis", "results/q1"):
+        (ws / relative).mkdir(parents=True, exist_ok=True)
+    (ws / "01-analysis" / "scheme-registry.json").write_text(
+        json.dumps({"version": 1, "questions": {"q1": {"candidates": [
+            {"name": "base", "kind": "baseline"}, {"name": "adv", "kind": "advanced"}],
+            "race": {"required": True, "schemes": ["base", "adv"],
+                     "primary_metric": "cv_rmse", "direction": "min", "protocol": "同折"}}}},
+            ensure_ascii=False), encoding="utf-8")
+    (ws / "results/q1" / "summary.md").write_text(
+        "---\nquestion: q1\nstatus: solved\nchosen_scheme: base\n"
+        "schemes_compared: [base, adv]\nrobustness: 稳健\n---\n", encoding="utf-8")
+    (ws / "results/q1" / "scheme-comparison.md").write_text(
+        "---\nwinner: base\nprimary_metric: cv_rmse\n---\n\n"
+        "| scheme | feasibility | cv_rmse |\n|---|---|---|\n"
+        "| base | pass | 0.032 |\n| adv | pass | 0.040 |\n", encoding="utf-8")
+    log = root / "race-log.md"
+    run = sp.run(
+        [_sys.executable, str(SCRIPTS / "kb_backfill.py"), str(ws), "--log", str(log)],
+        capture_output=True, text=True, encoding="utf-8")
+    assert run.returncode == 0, run.stderr
+    assert "base=0.032" in log.read_text(encoding="utf-8")
+    run2 = sp.run(
+        [_sys.executable, str(SCRIPTS / "kb_backfill.py"), str(ws), "--log", str(log)],
+        capture_output=True, text=True, encoding="utf-8")
+    assert "0 row(s)" in run2.stdout
+
+
 def test_gate_s3_race_consistency(root: Path) -> None:
     root = make_workspace(root)
     registry = {

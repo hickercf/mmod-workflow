@@ -37,6 +37,11 @@ paper → compile）合并了“两种图”为一步，并插入本仓库的深
 | S7 | comp-review | `review-report.md`(round≥2, p0=0, pass)、`revision-log.md`(closed)、`depth-audit.md`(≥30/36)、`judge-scorecard-{A,B,C}.md`、`judge-panel.md`(pass) | 无（自动门） | M3-D |
 | S8 | comp-compile-zh | `paper/final/compliance-report.md`(pass)、最终 PDF/DOCX、`reviewed_package` 指向真实文件 | approve | M3-E |
 
+**S6 写作规范**：写作与评审共用 `.claude/skills/comp-workflow/references/writing-guidelines.md`
+（获奖论文硬规则：摘要数值密度、单位三重核对、结果汇总表、选型论证、约束达标标注、
+图注+读图等）；技能库 `knowledge-base/distillation/writing-skills.md`（56 条技能，
+源自 6 组同题多稿逆综合分析）按需取用。数值仍以 workspace 脚本产物为准。
+
 步骤状态机：`pending → running → waiting_checkpoint → completed`；检查点被打回为
 `rejected`（记录 feedback，主循环据此重跑该步）；崩溃恢复把 `running` 复位为 `pending`。
 
